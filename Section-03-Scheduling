@@ -1,0 +1,3 @@
+# Section 3 Scheduling
+
+If you have no scheduler, you can add `nodeName` to the pod definition yaml.
