@@ -318,3 +318,123 @@ spec:
     limits.cpu: 10
     limits.memory: 10Gi
 ```
+
+> NOTE: You cannot edit most of the fields on an actively running pod. The only ones editable are:
+> spec.containers...image
+> spec.initContainers...image
+> spec.activeDeadlineSeconds
+> spec.tolerations
+> However, you can edit the pod sections of a Deployment as the deployment will kill the pod and redeploy.
+
+## Daemonsets
+
+Log Monitoring, kube-proxy, weave-net... all require a pod running on each node.
+
+DaemonSets are setup exactly the same as ReplicaSets with only the 'kind' being different.
+
+K8s < 1.12 used 'nodeName' on each pod to instruct the pod on which node to run, but since 1.12 K8s uses affinity rules to accomplish the same.
+
+Lab Notes...
+
+There is no declarative way to generate a DaemonSet using `kubectl create`. You must use a Deployment or other object and then adjust it.
+
+```bash
+kubectl create deploy nginx --image=nginx --dry-run=client -o yaml | \
+    sed '/null\|{}\|replicas/d;/status/,$d;s/Deployment/DaemonSet/g' > nginx-ds.yaml
+```
+
+`strategy`,`status`,`replicas` must be removed for a daemonset.
+
+## Static Pods
+
+If a kubelet is managing a node independently from a cluster.
+
+kubelet can be configured to read certain directorys...`/etc/kubernetes/manifests`.
+
+These are known as static pods... Only pods can be created this way.
+
+Usually this configuration is stored as `--pod-manifest-path` in the kubelet.service file or `staticPodPath` in the kubeconfig.yaml and the path to the kubeconfig.yaml is stored on the kubelet.service as `--config`.
+
+Cluster setup using kubeadm use the `--config` option.
+
+Kubelet handling local pods...
+
+1. From static pods
+2. kube-apiserver
+
+Static pods can only be deleted on the local node using the manifests files.
+
+All static pods are reflected in the kube-apiserver with the appended node name.
+
+![alt text](./StaticPodsVSDaemonSets.png "Static Pods vs DaemonSets")
+
+Find your config location.
+
+```sh
+systemctl cat kubelet 
+...
+Environment="KUBELET_CONFIG_ARGS=--config=/var/lib/kubelet/config.yaml"
+...
+```
+
+OR examine the kubelet config file.
+
+```sh
+cat /var/lib/kubelet/config.yaml
+```
+
+View that file to discover the staticPodPath.
+
+Command Option rather than Executing a /bin/sh
+
+```sh
+kubectl run static-busybox --image=busybox --restart=Never --dry-run=client -o yaml --command -- sleep 1000 > static-busybox.yaml
+```
+
+## Multiple Schedulers
+
+```yaml
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+profile:
+- schedulerName: my-scheduler
+```
+
+## Configuring Scheduler Profiler
+
+![alt text](./ConfiguringSchedulerProfiles-ExtensionPoints.png "Configuring Scheduler Profiles using Extension Points")
+
+* Scheduling Queue
+  * Scheduling Plugins
+    * PrioritySort
+  * Extension Points
+    * queueSort
+* Filtering
+  * Scheduling Plugins
+    * NodeResourcesFit
+    * NodeName
+    * NodeUnschedulable
+  * Extension Points
+    * preFilter
+    * filter
+    * postFilter
+* Scoring (weights)
+  * Scheduling Plugins
+    * NodeResourcesFit
+    * ImageLocality
+  * Extension Points
+    * preScore
+    * score
+    * reserve
+    * permit
+* Binding
+  * Scheduling Plugins
+    * DefaultBinder
+  * Extension Points
+    * preBind
+    * bind
+    * postBind
+
+Instead of deploying multiple schedulers as processes, you can deploy schedulers under the main scheduler with just a different profile.
+
+![alt text](./ConfiguringSchedulerProfiles-Profiles.png "Configuring Scheduler Profiles Detailed")
