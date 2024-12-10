@@ -5,3 +5,5 @@
 [Scheduling](./Section-03-Scheduling.md)
 
 [Logs and Monitoring](./Section-04-Logging-Monitoring.md)
+
+[Application Lifecycle](./Section-05-Application-Lifecycle.md)
