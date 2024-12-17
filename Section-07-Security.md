@@ -977,4 +977,3 @@ kubens <new_namespace>
 To switch back to previous namespace:
 
 kubens -
-
