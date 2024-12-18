@@ -82,7 +82,6 @@ This is a Liveness Probe.
 
 ## Review Exam Dumps
 
-https://www.itexams.com/exam/CKA
+[https://www.itexams.com/exam/CKA](https://www.itexams.com/exam/CKA)
 
-https://github.com/fahmifahim/kubernetes-cka/blob/master/02.CKA_practice.md
-
+[https://github.com/fahmifahim/kubernetes-cka/blob/master/02.CKA_practice.md](https://github.com/fahmifahim/kubernetes-cka/blob/master/02.CKA_practice.md)

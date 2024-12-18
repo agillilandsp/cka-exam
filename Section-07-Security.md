@@ -228,7 +228,7 @@ openssl x509 -in ca.crt -text -noout
 
 > NOTE: All steps were fine, but I ran into an issue with the etcd.yaml change question. I added `server.crt` back to the file and the logs were showing etcd was still trying to find the `server-certificate.crt` file.
 
-## Certifiates API
+## Certificates API
 
 CertificateSigningRequests Object
 
@@ -244,7 +244,7 @@ openssl req -new -key new-user.key -subj "/CN=kube-new-user" -out new-user.csr
 cat new-user.csr | base64 #output goes into the yaml below...
 ```
 
-https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#create-certificatesigningrequest
+[Certificate Signing Requests Details](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#create-certificatesigningrequest)
 
 ```yaml
 apiVersion: certificates.k8s.io/v1
@@ -293,25 +293,25 @@ kubectl get csr new-user -o yaml
 
 Lab notes...
 
-**Check a Certificate Signing Request (CSR)**
+#### Check a Certificate Signing Request (CSR)
 
 ```sh
 openssl req -text -noout -verify -in CSR.csr
 ```
 
-**Check a private key**
+### Check a private key
 
 ```sh
 openssl rsa -in privateKey.key -check
 ```
 
-**Check a certificate**
+#### Check a certificate
 
 ```sh
 openssl x509 -in certificate.crt -text -noout
 ```
 
-**Check a PKCS#12 file (.pfx or .p12)**
+#### Check a PKCS#12 file (.pfx or .p12)
 
 ```sh
 openssl pkcs12 -info -in keyStore.p12
@@ -739,8 +739,6 @@ spec:
 
 ## Pre-requisite - Security in Docker
 
-### Security 
-
 Docker runs as a root user.
 
 You can set the user on the docker run command.
@@ -930,50 +928,52 @@ This can quickly become and confusing and overwhelming task if you had to rely o
 
 This is where command line tools such as kubectx and kubens come in to picture.
 
-Reference: https://github.com/ahmetb/kubectx
+[Reference](https://github.com/ahmetb/kubectx)
 
-### Kubectx:
+### Kubectx
 
 With this tool, you don't have to make use of lengthy “kubectl config” commands to switch between contexts. This tool is particularly useful to switch context between clusters in a multi-cluster environment.
 
-Installation:
+```sh
+# Installation:
 
 sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
 sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
 
-Syntax:
+# Syntax:
 
-To list all contexts:
+# To list all contexts:
 
 kubectx
 
-To switch to a new context:
+# To switch to a new context:
 
 kubectx <context_name>
 
-To switch back to previous context:
+# To switch back to previous context:
 
 kubectx -
 
-To see current context:
+# To see current context:
 
 kubectx -c
 
 ### Kubens:
 
-This tool allows users to switch between namespaces quickly with a simple command.
+# This tool allows users to switch between namespaces quickly with a simple command.
 
-Installation:
+# Installation:
 
 sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
 sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
 
-Syntax:
+# Syntax:
 
-To switch to a new namespace:
+# To switch to a new namespace:
 
 kubens <new_namespace>
 
-To switch back to previous namespace:
+# To switch back to previous namespace:
 
 kubens -
+```

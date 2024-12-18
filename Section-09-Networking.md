@@ -72,9 +72,9 @@ CoreDNS also supports other ways of configuring DNS entries through plugins. We 
 
 Read more about CoreDNS here:
 
-https://github.com/kubernetes/dns/blob/master/docs/specification.md
+[CoreDNS Specifications](https://github.com/kubernetes/dns/blob/master/docs/specification.md)
 
-https://coredns.io/plugins/kubernetes/
+[CoreDNS Plugin](https://coredns.io/plugins/kubernetes/)
 
 ## Prerequisite - Network Namespaces
 
@@ -144,9 +144,9 @@ Ports that are frequently used:
 
 In the upcoming labs, we will work with Network Addons. This includes installing a network plugin in the cluster. While we have used weave-net as an example, please bear in mind that you can use any of the plugins which are described here:
 
-https://kubernetes.io/docs/concepts/cluster-administration/addons/
+[K8s Addons](https://kubernetes.io/docs/concepts/cluster-administration/addons/)
 
-https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model
+[K8s Admin Networking](https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model)
 
 In the CKA exam, for a question that requires you to deploy a network addon, unless specifically directed, you may use any of the solutions described in the link above.
 
@@ -158,7 +158,7 @@ NOTE: In the official exam, all essential CNI deployment details will be provide
 
 Lab Notes...
 
-Question 9. Finding your default gateway IP... 
+Question 9. Finding your default gateway IP...
 
 ```sh
 controlplane ~ ✖ ip route |grep default
@@ -521,8 +521,198 @@ items:
         type: RollingUpdate
 ```
 
-??? Solution covers more regarding weavenet deployments and configuring from the online manifest. The solution covers the use of the config map in the kube-proxy and using that for the IP_ALLOC field of the weavenet manifest. 
+??? Solution covers more regarding weavenet deployments and configuring from the online manifest. The solution covers the use of the config map in the kube-proxy and using that for the IP_ALLOC field of the weavenet manifest.
+
 [Follow up](https://samaritanspurse.udemy.com/course/certified-kubernetes-administrator-with-practice-tests/learn/lecture/21739724#overview)
 
+## IP Address Management Weave
 
+```sh
+cat /etc/cni/net.d/net-script.conf
+...
+"ipam": {
+  "type": "host-local",
+  "subnet": ...,
+  "routes: [
+    {"dst":...}
+    ]
+  }
+}
+```
 
+Lab Notes...
+
+Question 6 What is the IP Range in use.
+
+Describe weave pods or daemonset and find the `IPALLOC_RANGE:`
+
+Question 7 What is the default gateway on the node01?
+
+Deploy a pod (not sure how to assign to a node???)
+
+```sh
+kubectl run nginx --image=nginx
+
+k get po -A -owide
+
+node01 ~ ➜  ip route
+default via 172.25.0.1 dev eth1 
+10.244.0.0/16 dev weave proto kernel scope link src 10.244.192.0 
+172.25.0.0/24 dev eth1 proto kernel scope link src 172.25.0.70 
+192.19.4.0/24 dev eth0 proto kernel scope link src 192.19.4.3 
+```
+
+SOLUTION: Deploying a pod on node01
+
+```sh
+kubectl run busybox --image=busybox --dry-run -o yaml --sleep 1000 > busybox.yaml
+
+# Add node name under spec...
+
+...
+spec:
+  nodeName: node01
+  containers:
+...
+```
+
+```sh
+k exec busybox -- ip route
+default via 10.244.192.0 dev eth0
+10.244.0.0/16 dev eth0 scope link src 10.244.192.1
+```
+
+## Service Networking
+
+ClusterIP... available only to the cluster.
+
+NodePort... same as ClusterIP but has external access to one ip on one node.
+
+Services in detail...
+
+Each kube-proxy gets the allocated ip for the svc from k8s-apiserver and creates forwarding rules.
+
+Different methods for forwarding...
+
+- iptables (default)
+- ipvs
+- userspace
+
+```sh
+# startup kube-api-server --service-cluster-ip-range ipNet (Default 10.0.0.0/24)
+cat /etc/kubernetes/manifests/kube-apiserver.yaml|grep service-cluster-ip
+```
+
+Do not overlap your networks (svcs and pods)
+
+Inspect the forwarding rules using the iptables...
+
+```sh
+k get service
+NAME...
+db-service...
+
+iptables -L -t nat | grep db-service
+
+# check log (you need the correct verbosity set)
+cat /var/log/kube-proxy.log
+```
+
+Lab notes...
+
+```sh
+# Find which ip forwarding/proxy is being used by kube-proxy.
+
+controlplane ~ ✖ k logs kube-proxy-pf4gp -n kube-system
+I1217 22:13:51.393085       1 server_linux.go:66] "Using iptables proxy"
+I1217 22:13:51.568328       1 server.go:677] "Successfully retrieved node IP(s)" IPs=["192.19.102.3"]
+I1217 22:13:51.590697       1 conntrack.go:60] "Setting nf_conntrack_max" nfConntrackMax=1179648
+I1217 22:13:51.592094       1 conntrack.go:121] "Set sysctl" entry="net/netfilter/nf_conntrack_tcp_timeout_established" value=86400
+E1217 22:13:51.593323       1 server.go:234] "Kube-proxy configuration may be incomplete or incorrect" err="nodePortAddresses is unset; NodePort connections will be accepted on all local IPs. Consider using `--nodeport-addresses primary`"
+I1217 22:13:51.612607       1 server.go:243] "kube-proxy running in dual-stack mode" primary ipFamily="IPv4"
+I1217 22:13:51.612665       1 server_linux.go:169] "Using iptables Proxier"
+# NOTE THIS LINE ABOVE.
+```
+
+```sh
+# Lab History
+k get nodes -o wide
+ip a
+k get po -o wide
+k get po -A -o wide
+k logs weave-net-bvmx7
+k logs weave-net-bvmx7 -n kube-system
+k get svc -o wide
+k get svc -o wide -A
+cat /etc/kubernetes/manifests/kube-apiserver.yaml |grep ip-range
+k get po -A
+k logs kube-proxy-pf4gp
+k logs kube-proxy-pf4gp -n kube-system
+k get svc
+k get svc -A
+iptables -L -t nat |grep kube-dns
+k get ds
+k get ds -A
+```
+
+## DNS in Kubernetes
+
+Pods use dashes on their IP.
+
+service.namespace.svc.cluster.local
+
+## CoreDNS K8s
+
+```sh
+cat /etc/resolv.conf
+
+cat /etc/hosts
+
+cat /etc/coredns/Corefile
+
+kubelet updates the kube-dns
+```
+
+Lab Notes...
+
+Question 5. Where is the Corefile?
+
+Mounted as a config map at /etc/coredns
+
+Inspect the pods and get the config map information.
+
+Inspect the config map for coredns.
+
+```sh
+k -n kube-system  get po
+k -n kube-system describe po coredns-77d6fd4654-x4fht
+k -n kube-system get po coredns-77d6fd4654-x4fht -o yaml
+k get cm -n kube-system
+k get cm dns -n kube-system
+k get cm coredns -n kube-system
+k get cm coredns -n kube-system -o yaml
+k get po -A
+k get po,svc -A
+k exec test -- curl http://web-service.payroll
+k exec test -- curl http://hr
+k get po -A -owide
+k exec test -- curl http://172-17-0-5.hr.pod
+k exec test -- curl http://172-17-0-5.hr
+k get svc -A
+k describe svc test-service
+k describe svc web-service
+k get po
+k get deployment
+k edit deployment webapp
+k get op -A
+k get po -A
+k edit deployment webapp
+k exec hr -- nslookup mysql
+k exec hr -- nslookup mysql > /root/CKA/nslookup.out
+cat /root/CKA/nslookup.out 
+k get svc -A
+k exec hr -- nslookup mysql.svc > /root/CKA/nslookup.out
+cat /root/CKA/nslookup.out 
+k exec hr -- nslookup mysql.payroll.svc > /root/CKA/nslookup.out
+cat /root/CKA/nslookup.out 
+```
