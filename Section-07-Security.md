@@ -252,11 +252,12 @@ kind: CertificateSigningRequest
 metadata:
   name: new-user
 spec:
+  signerName: kubernetes.io/kube-apiserver-client
   expirationSeconds: 600
   usages:
   - digital signature
   - key encipherment
-  - server auth
+  - client auth
   request:
 
     LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1hUQ0NBVVVDQVFBd0dERVdN
@@ -288,6 +289,8 @@ kubectl certificate approve new-user
 
 kubectl get csr new-user -o yaml
 ```
+
+Now you need to add that certificate for the new user to your kubectl config.
 
 > All Certificate Management is done by the Controller Manager
 

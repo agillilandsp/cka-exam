@@ -548,7 +548,7 @@ Describe weave pods or daemonset and find the `IPALLOC_RANGE:`
 
 Question 7 What is the default gateway on the node01?
 
-Deploy a pod (not sure how to assign to a node???)
+Deploy a pod (use nodeSelector or nodeName)
 
 ```sh
 kubectl run nginx --image=nginx
