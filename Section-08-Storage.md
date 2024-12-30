@@ -67,7 +67,7 @@ spec:
 
 Lab Notes...
 
-??? revisit Question 4 - I made this one too complicated. You can use a hostPath mount from a Pod directly.
+Revisit Question 4 - I made this one too complicated. You can use a hostPath mount from a Pod directly.
 
 I forgot to copy out the yaml files...
 
@@ -94,7 +94,7 @@ spec:
   volumes:
   - name: log-volume
     hostPath:
-    path: /var/log/webapp
+      path: /var/log/webapp
 ```
 
 ```yaml

@@ -9,9 +9,9 @@ Areas to focus:
   * Know Ingress
 * OpenSSL and Cert Maintenance [link](#openssl-and-cert-maintenance)
 * Adding a Node to a Cluster
-* Kubeadm Install, Upgrade
+* Kubeadm Install, Upgrade [link](#kubeadm-install-upgrade)
   * Specifically `apt` commands
-* Misc Review
+* Misc Review [link](#misc-review)
 
 ## Network Policies
 
@@ -185,7 +185,7 @@ Know where kubelet logs are:
 
 ## Services (LB vs ClusterIP vs NodePort)
 
-[Ingress Review](./Section-07-Security.md#ingress---annotations-and-rewrite-target)
+[Ingress Review](./Section-09-Networking.md#article-ingress)
 
 ## OpenSSL and Cert Maintenance
 
@@ -271,11 +271,15 @@ kubectl renew apiserver
 
 ## Adding a Node to a Cluster
 
+[Join a Node to a Cluster](./Section-100-KillerShellExams.md#q20)
+
 ## Kubeadm Install, Upgrade
 
-## Misc  Review
+[Cluster Upgrade](./Section-06-ClusterMaintenance.md#cluster-upgrade-commands)
 
-Marked for Study (Look for ???):
+## Misc Review
+
+Marked for Study:
 
 [Control Plane Node Failure](./Section-13-Troubleshooting.md#control-plane-failure)
 
@@ -284,3 +288,13 @@ Marked for Study (Look for ???):
 [Image Security Review](./Section-07-Security.md#image-security)
 
 [Resolving Names in Cluster](./Section-16-Mock-Exams.md#q7)
+
+[Configuration/Installing CNI (Weave)](./Section-09-Networking.md#practice-test-deploy-network-solution)
+
+olution covers more regarding weavenet deployments and configuring from the online manifest. The solution covers the use of the config map in the kube-proxy and using that for the IP_ALLOC field of the weavenet manifest.
+
+> NOTE: Check the configmap or kube-proxy (not the local file system) to find the arguments on --cidr needed.
+
+<https://samaritanspurse.udemy.com/course/certified-kubernetes-administrator-with-practice-tests/learn/lecture/21739724#overview)>
+
+[CNI Weave](./Section-09-Networking.md#cni-weave)

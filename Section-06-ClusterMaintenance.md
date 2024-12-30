@@ -20,13 +20,13 @@ Only the last 3 minor versions are supported for upgrading.
 
 Its best to upgrade your cluster one minor version at a time.
 
-## Demo - Cluster Upgrade
+## Cluster Upgrade Commands
 
 ```sh
 cat /etc/release
 ```
 
-```sh
+```sh CONTROLPLANE NODES
 # Upgrade kubeadm
 vim /etc/apt/sources.list.d/kubernetes.list
 
@@ -54,13 +54,8 @@ sudo kubeadm upgrade apply v1.31.0
 
 # NOTE Kubelet does not upgrade after a kubeadm upgrade.
 
-# Repeat on all controlplane nodes but use:
+# Repeat on all controlplane nodes but use: sudo kubeadm upgrade node
 
-sudo kubeadm upgrade node
-
-```
-
-```bash
 # Upgrade Kubelet
 kubectl drain controlplane --ignore-daemonsets
 
@@ -72,11 +67,32 @@ sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 
 kubectl uncordon controlplane
+```
 
-# Same on node01
+```sh WORKER NODES
+# Drain on node01
 kubectl drain node01 --ignore-daemonsets
 
 # ssh node01
+# Upgrade kubeadm
+vim /etc/apt/sources.list.d/kubernetes.list
+
+# You should see...
+deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+
+# Change the v1.29 to v1.30
+deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /
+
+# Find the latest patch for the version in the next step
+sudo apt update
+sudo apt-cache madison kubeadm
+
+sudo apt-mark unhold kubeadm && \
+sudo apt-get update && sudo apt-get install -y kubeadm='1.31.x-*' && \
+sudo apt-mark hold kubeadm
+
+sudo kubeadm upgrade node v1.31.0
+
 sudo apt-mark unhold kubelet kubectl && \
 sudo apt-get update && sudo apt-get install -y kubelet='1.31.0-1.1' kubectl='1.31.0-1.1' && \
 sudo apt-mark hold kubelet kubectl
@@ -89,7 +105,6 @@ sudo systemctl restart kubelet
 kubectl uncordon node01
 
 ```
-
 
 ## Backup and Restore Methods
 
@@ -202,7 +217,7 @@ kubectl get po
       type: DirectoryOrCreate
 ```
 
-> HOW DO I KNOW HOW MANY NODES ARE IN AN EXTERNAL ETCD CLUSTER???
+> HOW DO I KNOW HOW MANY NODES ARE IN AN EXTERNAL ETCD CLUSTER?
 
 ETCDCTL_API=3 etcdctl --endpoints 127.0.0.1:2379 \
   --cert=/etc/kubernetes/pki/etcd/server.crt \

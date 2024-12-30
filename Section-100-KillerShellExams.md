@@ -12,7 +12,7 @@ export now="--force --grace-period 0"   # k delete pod x $now
 
 ## Questions
 
-Q.1.
+### Q.1.
 
 You have access to multiple clusters from your main terminal through kubectl contexts. Write all those context names into /opt/course/1/contexts.
 
@@ -22,19 +22,19 @@ Finally write a second command doing the same thing into /opt/course/1/context_d
 
 kubectl top pod --containers=true
 
-Q.2.
+### Q.2.
 
 Use context: kubectl config use-context k8s-c1-H
 
 Create a single Pod of image httpd:2.4.41-alpine in Namespace default. The Pod should be named pod1 and the container should be named pod1-container. This Pod should only be scheduled on controlplane nodes. Do not add new labels to any nodes.
 
-Q.3.
+### Q.3.
 
 Use context: kubectl config use-context k8s-c1-H
 
 There are two Pods named o3db-* in Namespace project-c13. C13 Management asked you to scale the Pods down to one replica to save resources.
 
-Q.4.
+### Q.4.
 
 Use context: kubectl config use-context k8s-c1-H
 
@@ -84,7 +84,7 @@ spec:
 status: {}
 ```
 
-Q.5.
+### Q.5.
 
 Use context: kubectl config use-context k8s-c1-H
 
@@ -104,7 +104,7 @@ kubectl get pod -A --sort-by=.metadata.creationTimestamp
 kubectl get pod -A --sort-by=.metadata.uid
 ```
 
-Q.6.
+### Q.6.
 
 Use context: kubectl config use-context k8s-c1-H
 
@@ -185,7 +185,7 @@ spec:
           mountPath: /tmp/safari-data               # add
 ```
 
-Q.7. Use context: kubectl config use-context k8s-c1-H
+### Q.7. Use context: kubectl config use-context k8s-c1-H
 
 The metrics-server has been installed in the cluster. Your college would like to know the kubectl commands to:
 
@@ -205,7 +205,7 @@ kubectl top node
 kubectl top pod --containers=true
 ```
 
-Q.8.
+### Q.8.
 
 SOLUTION:
 
@@ -233,7 +233,7 @@ etcd: static-pod
 dns: pod coredns
 ```
 
-Q.9.
+### Q.9.
 
 Kill Scheduler, Manual Scheduling
 
@@ -241,7 +241,7 @@ SOLUTION:
 
 Watch your context. This was applied to the wrong cluster.
 
-Q.10.
+### Q.10.
 
 RBAC ServiceAccount Role RoleBinding
 
@@ -255,7 +255,7 @@ SOLUTION:
 
 Watch your context. This was applied to the wrong cluster.
 
-Q.11.
+### Q.11.
 
 DaemonSet on all Nodes
 
@@ -267,7 +267,7 @@ The Pods it creates should request 10 millicore cpu and 10 mebibyte memory. The 
 
 
 
-Q.12.
+### Q.12.
 
 Use context: kubectl config use-context k8s-c1-H
 
@@ -280,7 +280,7 @@ First named container1 with image nginx:1.17.6-alpine
 Second named container2 with image google/pause
 There should only ever be one Pod of that Deployment running on one worker node, use topologyKey: kubernetes.io/hostname for this
 
-Q.13. 
+### Q.13. 
 
 Use context: kubectl config use-context k8s-c1-H
 
@@ -298,7 +298,7 @@ SOLUTION:
 
 ![alt text](image-1.png)
 
-Q.14.
+### Q.14.
 
 Use context: kubectl config use-context k8s-c1-H
 
@@ -320,7 +320,7 @@ Write your answers into file /opt/course/14/cluster-info, structured like this:
 5: [ANSWER]
 ```
 
-Q.15.
+### Q.15.
 
 Use context: kubectl config use-context k8s-c2-AC
 
@@ -332,13 +332,13 @@ Finally kill the containerd container of the kube-proxy Pod on node cluster2-nod
 
 Do you notice differences in the events both actions caused?
 
-Q.16. Use context: kubectl config use-context k8s-c1-H
+### Q.16. Use context: kubectl config use-context k8s-c1-H
 
 Write the names of all namespaced Kubernetes resources (like Pod, Secret, ConfigMap...) into /opt/course/16/resources.txt.
 
 Find the project-* Namespace with the highest number of Roles defined in it and write its name and amount of Roles into /opt/course/16/crowded-namespace.txt.
 
-Q.17.
+### Q.17.
 
 Use context: kubectl config use-context k8s-c1-H
 
@@ -350,7 +350,7 @@ Write the ID of the container and the info.runtimeType into /opt/course/17/pod-c
 
 Write the logs of the container into /opt/course/17/pod-container.log
 
-Q.18.
+### Q.18.
 
 Use context: kubectl config use-context k8s-c3-CCC
 
@@ -358,7 +358,7 @@ There seems to be an issue with the kubelet not running on cluster3-node1. Fix i
 
 Write the reason of the issue into /opt/course/18/reason.txt.
 
-Q.19.
+### Q.19.
 
 ℹ️ This task can only be solved if questions 18 or 20 have been successfully implemented and the k8s-c3-CCC cluster has a functioning worker node
 
@@ -372,7 +372,7 @@ Create a new Secret in Namespace secret called secret2 which should contain user
 
 Confirm everything is working.
 
-Q.20.
+### Q.20.
 
 Use context: kubectl config use-context k8s-c3-CCC
 
@@ -388,13 +388,11 @@ kubectl version
 kubeadm version
 
 kubeadm upgrade
-#couldn't create a Kubernetes client from file "/etc/kubernetes/# kubelet.conf": failed to load admin kubeconfig: open /etc/
-# kubernetes/kubelet.conf: no such file or directory
-# THIS PRODUCES AN ERROR WHICH INDICATES IT HAS NEVER JOINED.
+# "couldn't create a Kubernetes client from file "/etc/kubernetes/# kubelet.conf": failed to load admin kubeconfig: open /etc/kubernetes/kubelet.conf: no such file or directory"
+# THIS ERROR INDICATES IT HAS NEVER JOINED.
 # AFTER YOUR UPGRADE JOIN THE CLUSTER
 
 sudo apt show kubectl -a | grep <version on controlplane>
-
 
 sudo apt list kubeadm # Note the version. Check it against the control plane. They are the same which means this node hasn't joined the cluster.
 
@@ -416,7 +414,7 @@ sudo kubeadm join --token 5didvk.d09sbcov8ph2amjw <control-plane-host>:6443 --di
 
 <https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade>
 
-Q.21.
+### Q.21.
 
 Use context: kubectl config use-context k8s-c3-CCC
 
@@ -428,7 +426,7 @@ Then create a NodePort Service named static-pod-service which exposes that stati
 
 SOLUTION
 
-Q.22.
+### Q.22.
 
 Use context: kubectl config use-context k8s-c2-AC
 
@@ -447,7 +445,7 @@ kubeadm certs check-expiration
 ```
 
 ??? I need to study more of the openssl commands.
-Q.23.
+### Q.23.
 
 Use context: kubectl config use-context k8s-c2-AC
 
@@ -481,7 +479,7 @@ openssl x509  -noout -text -in /var/lib/kubelet/pki/kubelet.crt | grep "Extended
 
 ??? I need more familiarity with `openssl x509 -noout -text -in...`
 
-Q.24.
+### Q.24.
 
 Use context: kubectl config use-context k8s-c1-H
 
@@ -526,7 +524,7 @@ vault secret storage
 ![alt text](image.png)
 
 
-Q.25.
+### Q.25.
 
 Use context: kubectl config use-context k8s-c3-CCC
 
