@@ -8,7 +8,7 @@ Areas to focus:
 * Services (LB vs ClusterIP vs NodePort) [link](#services-lb-vs-clusterip-vs-nodeport)
   * Know Ingress
 * OpenSSL and Cert Maintenance [link](#openssl-and-cert-maintenance)
-* Adding a Node to a Cluster
+* Adding a Node to a Cluster [link](#adding-a-node-to-a-cluster)
 * Kubeadm Install, Upgrade [link](#kubeadm-install-upgrade)
   * Specifically `apt` commands
 * Misc Review [link](#misc-review)
@@ -291,7 +291,7 @@ Marked for Study:
 
 [Configuration/Installing CNI (Weave)](./Section-09-Networking.md#practice-test-deploy-network-solution)
 
-olution covers more regarding weavenet deployments and configuring from the online manifest. The solution covers the use of the config map in the kube-proxy and using that for the IP_ALLOC field of the weavenet manifest.
+The solution covers more regarding weavenet deployments and configuring from the online manifest. The solution covers the use of the config map in the kube-proxy and using that for the IP_ALLOC field of the weavenet manifest.
 
 > NOTE: Check the configmap or kube-proxy (not the local file system) to find the arguments on --cidr needed.
 
