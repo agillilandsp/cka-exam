@@ -145,7 +145,6 @@ Since our ETCD database is TLS-Enabled, the following options are mandatory:
 
 --key                                                      identify secure client using this TLS key file
 
-
 Similarly use the help option for snapshot restore to see all available options for restoring the backup.
 
 etcdctl snapshot restore -h
